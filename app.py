@@ -22,7 +22,7 @@ def home():
 @app.route('/detect', methods=['POST'])
 def detect():
     if 'image' not in request.files:
-        return jsonify({'error': 'Walang image na natanggap'}), 400
+        return jsonify({'error': 'No image receive'}), 400
 
     image_file = request.files['image']
     image = Image.open(io.BytesIO(image_file.read())).convert('RGB')
