@@ -1,6 +1,5 @@
 
 from flask import Flask, request, jsonify
-import numpy as np
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.SystemClock
