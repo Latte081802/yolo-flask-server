@@ -8,7 +8,7 @@ import io
 app = Flask(__name__)
 
 # Load YOLOv11 TFLite model
-interpreter = tf.lite.Interpreter(model_path="C:\Users\Oreol\Desktop\Plant-Detection-master\Plant-Detection-master\Plantdetection\app\flask_server\yolov11v6.tflite")
+interpreter = tf.lite.Interpreter(model_path= r"C:\Users\Oreol\Desktop\Plant-Detection-master\Plant-Detection-master\Plantdetection\app\flask_server\yolov11v6.tflite")
 interpreter.allocate_tensors()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
