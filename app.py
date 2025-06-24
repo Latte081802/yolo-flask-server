@@ -1,66 +1,28 @@
-
 from flask import Flask, request, jsonify
-import android.content.Context
-import android.graphics.Bitmap
-import android.os.SystemClock
-import org.tensorflow.lite.DataType
-import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.gpu.CompatibilityList
-import org.tensorflow.lite.gpu.GpuDelegate
-import org.tensorflow.lite.support.common.FileUtil
-import org.tensorflow.lite.support.common.ops.CastOp
-import org.tensorflow.lite.support.common.ops.NormalizeOp
-import org.tensorflow.lite.support.image.ImageProcessor
-import org.tensorflow.lite.support.image.TensorImage
-import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
-from PIL import Image
-import io
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
-# Load YOLOv11 TFLite model
-interpreter = tf.lite.Interpreter(model_path= r"C:\Users\Oreol\Desktop\Plant-Detection-master\Plant-Detection-master\Plantdetection\app\flask_server\yolov11v6.tflite")
-interpreter.allocate_tensors()
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
-input_shape = input_details[0]['shape']
-input_height, input_width = input_shape[1], input_shape[2]
-
-@app.route('/', methods=['GET'])
+@app.route("/")
 def home():
     return "🚀 Flask YOLOv11 Server is running!"
 
-@app.route('/detect', methods=['POST'])
+@app.route("/detect", methods=["POST"])
 def detect():
-    if 'image' not in request.files:
-        return jsonify({'error': 'No image receive'}), 400
+    if "image" not in request.files:
+        return jsonify({"error": "No image uploaded"}), 400
 
-    image_file = request.files['image']
-    image = Image.open(io.BytesIO(image_file.read())).convert('RGB')
-    image = image.resize((input_width, input_height))
-    input_data = np.expand_dims(image, axis=0).astype(np.float32) / 255.0
+    # Kunwari dummy result lang muna (para matest mo sa Android app)
+    result = {
+        "label": "Tomato Leaf Blight",
+        "confidence": 0.91
+    }
 
-    interpreter.set_tensor(input_details[0]['index'], input_data)
-    interpreter.invoke()
-    output_data = interpreter.get_tensor(output_details[0]['index'])
+    return jsonify(result), 200
 
-    detections = []
-    for det in output_data[0]:
-        if det[4] > 0.3:
-            detections.append({
-                'xmin': float(det[0]),
-                'ymin': float(det[1]),
-                'xmax': float(det[2]),
-                'ymax': float(det[3]),
-                'confidence': float(det[4]),
-                'class_id': int(det[5])
-            })
 
-    return jsonify(detections)
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+# ✅ Ito ang magpapatakbo kapag gusto mong i-run manually sa terminal
+if __name__ == "__main__":
+    # Run locally
+    app.run(host="0.0.0.0", port=10000, debug=True)
